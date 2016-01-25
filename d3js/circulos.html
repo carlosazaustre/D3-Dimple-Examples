@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+  <script>
+  var dataset = [4, 8, 15, 16, 23, 42];
+
+  var svg = d3.select('body')
+    .append('svg')
+    .attr('width', 500)
+    .attr('height', 100);
+
+  svg.selectAll('circle')
+    .data(dataset)
+    .enter()
+    .append('circle')
+    .attr('cx', function (data, index) {
+      // Para separarlos a lo largo del eje X
+      return index * (500 / dataset.length);
+    })
+    .attr('cy', function (data) {
+      return 100/2; // A la mitad del eje Y
+    })
+    .attr('r', function (data) {
+      return data;
+    })
+    .attr('fill', function (data) {
+      var transparency = 0.01 * data;
+      return 'rgba(45, 144, 82, '+transparency+')';
+    })
+
+  </script>
+</body>
+</html>

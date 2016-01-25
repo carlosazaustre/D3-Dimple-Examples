@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+  <script>
+  var dataset = [
+    { "partido": "PP", "color": "#117de2", "diputados": 123 },
+    { "partido": "PSOE", "color": "#fa1544", "diputados": 90 },
+    { "partido": "Podemos", "color": "#40127a", "diputados": 69 },
+    { "partido": "C's", "color": "#d68c1d", "diputados": 40 },
+    { "partido": "ERC", "color": "#ffed00", "diputados": 9 },
+    { "partido": "DiL", "color": "#111f9d", "diputados": 8 },
+    { "partido": "PNV", "color": "#316924", "diputados": 6 },
+    { "partido": "IU", "color": "#8f0f0f", "diputados": 2 },
+    { "partido": "Bildu", "color": "#61ab4f", "diputados": 2 },
+    { "partido": "CC", "color": "#a4d037", "diputados": 1 }
+  ];
+
+  var svg = d3.select('body')
+    .append('svg')
+    .attr('width', 360)
+    .attr('height', 360)
+    .append('g')
+    .attr('transform', 'translate('+ 180 +','+ 180 +')')
+
+  var arc = d3.svg.arc()
+    .outerRadius(Math.min(360, 360) / 2);
+
+  var pie = d3.layout.pie()
+    .value(function (data) {
+      return data.diputados;
+    })
+    .sort(null);
+
+  var path = svg.selectAll('path')
+    .data(pie(dataset))
+    .enter()
+    .append('path')
+    .attr('d', arc)
+    .attr('fill', function (d, index) {
+      return d.data.color;
+    });
+
+  </script>
+</body>
+</html>

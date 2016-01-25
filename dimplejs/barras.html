@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DimpleJS</title>
+  <style>
+    circle {
+    fill: red;
+    }
+  </style>
+</head>
+<body>
+  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+  <script type="text/javascript" src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
+  <script type="text/javascript">
+    function draw (data) {
+      // D3 Setup
+      var margin = 75;
+      var width = 1400 - margin;
+      var height = 600 - margin;
+
+      d3.select('body')
+        .append('h2')
+        .text('World Cup Attendance');
+
+      var svg = d3.select('body')
+        .append('svg')
+          .attr('width', width + margin)
+          .attr('height', height + margin)
+        .append('g')
+          .attr('class', 'chart');
+
+      var myChart = new dimple.chart(svg, data);
+      var x = myChart.addTimeAxis("x", "year");
+      x.dateParseFormat = "%Y";
+      x.tickFormat = "%Y";
+      x.timeInterval = 4;
+      myChart.addMeasureAxis("y", "attendance");
+      myChart.addSeries(null, dimple.plot.bar);
+      myChart.addSeries(null, dimple.plot.scatter);
+      myChart.addSeries(null, dimple.plot.line);
+      myChart.draw();
+    }
+
+    d3.tsv('world_cup.tsv', draw);
+  </script>
+</body>
+</html>

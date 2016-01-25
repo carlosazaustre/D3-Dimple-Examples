@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Congreso de los Diputados</title>
+  <style>
+    .dimple-pp {fill: #117de2 !important;  }
+    .dimple-psoe {fill: #fa1544 !important; }
+    .dimple-podemos {fill: #40127a !important; }
+    .dimple-c-s {fill: #d68c1d !important; }
+    .dimple-erc {fill: #ffed00 !important; }
+    .dimple-dil {fill: #111f9d !important; }
+    .dimple-pnv {fill: #316924 !important; }
+    .dimple-iu {fill: #8f0f0f !important; }
+    .dimple-bildu {fill: #61ab4f !important; }
+    .dimple-cc {fill: #a4d037 !important; }
+
+  </style>
+</head>
+<body>
+  <div id="chartContainer">
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="http://dimplejs.org/dist/dimple.v2.1.6.min.js"></script>
+    <script type="text/javascript">
+      var svg = dimple.newSvg("#chartContainer", 590, 400);
+      d3.csv("congreso.csv", function (data) {
+        var myChart = new dimple.chart(svg, data);
+        myChart.setBounds(20, 20, 460, 360)
+        myChart.addMeasureAxis("p", "escaños");
+        myChart.addLegend(500, 20, 90, 300, "siglas");
+
+        var ring = myChart.addSeries("siglas", dimple.plot.pie);
+        ring.innerRadius = '50%';
+        //myChart.noFormats = true;
+        myChart.draw();
+      });
+    </script>
+  </div>
+</body>
+</html>

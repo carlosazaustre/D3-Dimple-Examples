@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    .legend {
+      font-size: 12px;
+    }
+    rect {
+      stroke-width: 2;
+      cursor: pointer;
+    }
+    rect.disabled {
+      fill: transparent !important;
+    }
+    #chart {
+      margin: 0 auto;
+      height: 530px;
+      width: 530px;
+      position: relative;
+    }
+    .tooltip {
+      background: #eee;
+      box-shadow: 0 0 5px #999;
+      color: #333;
+      display: none;
+      font-size: 12px;
+      left: 325px;
+      padding: 10px;
+      position: absolute;
+      text-align: center;
+      top: 35%;
+      width: 80px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <h1>Congreso de los Diputados</h1>
+  <div id="chart"></div>
+  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+  <script>
+  var dataset = [
+    { "partido": "PP", "color": "#117de2", "diputados": 123 },
+    { "partido": "PSOE", "color": "#fa1544", "diputados": 90 },
+    { "partido": "Podemos", "color": "#40127a", "diputados": 69 },
+    { "partido": "C's", "color": "#d68c1d", "diputados": 40 },
+    { "partido": "ERC", "color": "#ffed00", "diputados": 9 },
+    { "partido": "DiL", "color": "#111f9d", "diputados": 8 },
+    { "partido": "PNV", "color": "#316924", "diputados": 6 },
+    { "partido": "IU", "color": "#8f0f0f", "diputados": 2 },
+    { "partido": "Bildu", "color": "#61ab4f", "diputados": 2 },
+    { "partido": "CC", "color": "#a4d037", "diputados": 1 }
+  ];
+  var width = 530;
+  var height = 530;
+
+  var svg = d3.select('#chart')
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .append('g')
+    .attr('transform', 'translate('+ 265 +','+ 265 +')') // Centro
+
+  // Tooltips para información
+  var tooltip = d3.select('#chart')
+    .append('div')
+    .attr('class', 'tooltip');
+  tooltip.append('div')
+    .attr('class', 'partido');
+  tooltip.append('div')
+    .attr('class', 'diputados');
+  tooltip.append('div')
+    .attr('class', 'percent');
+
+  // Creación del arco y posterior "Donut"
+  var donutWidth = 80;
+  var radius = Math.min(width, height) / 2;
+  var arc = d3.svg.arc()
+    .outerRadius(radius)
+    .innerRadius(radius - donutWidth);
+
+  // Función para introducir los datos en forma de PieChart
+  var pie = d3.layout.pie()
+    .value(function (data) {
+      return data.diputados;
+    })
+    .sort(null);
+
+  // Pintado del PieChart (añadiendo datos y pintandolo como arco)
+  var path = svg.selectAll('path')
+    .data(pie(dataset))
+    .enter()
+    .append('path')
+    .attr('d', arc)
+    .attr('fill', function (d, index) {
+      return d.data.color;
+    });
+
+  // Mouse handlers
+  path.on('mouseover', function(d) {
+    var total = d3.sum(dataset.map(function (d) {
+      return d.diputados;
+    }));
+    var percent = Math.round(1000 * d.data.diputados / total) / 10;
+    tooltip.select('.partido').html(d.data.partido);
+    tooltip.select('.diputados').html(d.data.diputados);
+    tooltip.select('.percent').html(percent + '%');
+    tooltip.style('display', 'block');
+  })
+
+  path.on('mouseout', function() {
+    tooltip.style('display', 'none');
+  })
+
+
+  // Leyenda - Creacion del gráfico
+  var legendRectSize = 18;
+  var legendSpacing = 4;
+  var legend = svg.selectAll('.legend')
+    .data(dataset)
+    .enter()
+    .append('g')
+    .attr('class', 'legend')
+    .attr('transform', function (data, index) {
+      var height = legendRectSize + legendSpacing;
+      var offset = height * dataset.length / 2;
+      var horz = -2 * legendRectSize;
+      var vert = index * height - offset;
+      return 'translate('+ horz +', '+ vert +')';
+    });
+
+  // Cuadros de la leyenda
+  legend.append('rect')
+    .attr('width', legendRectSize)
+    .attr('height', legendRectSize)
+    .style('fill', function (data) {
+      return data.color;
+    })
+    .style('stroke', function (data) {
+      return data.color;
+    });
+
+  // Texto de la leyenda
+  legend.append('text')
+    .attr('x', legendRectSize + legendSpacing)
+    .attr('y', legendRectSize - legendSpacing)
+    .text(function (data) {
+      return data.partido;
+    });
+
+
+  </script>
+</body>
+</html>
